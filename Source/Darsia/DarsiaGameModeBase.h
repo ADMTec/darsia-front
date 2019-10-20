@@ -22,4 +22,5 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	TArray<class ADarsiaCharacter*> Characters;
+
 };

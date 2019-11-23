@@ -12,7 +12,7 @@ ADarsiaCharacter::ADarsiaCharacter()
 	//{
 	//	DisplayMesh->SetStaticMesh(MeshAsset.Object);
 	//}
-	RootComponent = DisplayMesh;
+	//RootComponent = DisplayMesh;
 }
 
 void ADarsiaCharacter::BeginPlay()

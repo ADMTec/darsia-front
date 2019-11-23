@@ -1,11 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Character.h"
 #include "DarsiaCharacter.generated.h"
 
 UCLASS()
-class DARSIA_API ADarsiaCharacter : public AActor
+class DARSIA_API ADarsiaCharacter : public ACharacter
 {
 	GENERATED_BODY()
 	

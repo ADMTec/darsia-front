@@ -5,10 +5,10 @@
 
 void ADarsiaGameModeBase::BeginPlay()
 {
-	for (int i = 0; i < NumberOfPlayers; i++)
-	{
-		Characters.Add(GetWorld()->SpawnActor<ADarsiaCharacter>(
-			DarsiaCharacterBP, FTransform(FVector(i * 100, 0, 0))
-		));
-	}
+	//for (int i = 0; i < NumberOfPlayers; i++)
+	//{
+	//	Characters.Add(GetWorld()->SpawnActor<ADarsiaCharacter>(
+	//		DarsiaCharacterBP, FTransform(FVector(i * 200, 0, 0))
+	//	));
+	//}
 }

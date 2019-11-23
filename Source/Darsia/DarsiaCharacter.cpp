@@ -5,7 +5,7 @@
 ADarsiaCharacter::ADarsiaCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	DisplayMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DisplayMesh"));
+	//DisplayMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DisplayMesh"));
 
 	//static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset(TEXT("/Game/Darsia/Grid/S_Cell.S_Cell"));
 	//if (MeshAsset.Succeeded())

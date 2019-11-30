@@ -20,7 +20,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	int NumberOfPlayers = 2;
 
-	UPROPERTY(BlueprintReadOnly)
-	TArray<class ADarsiaCharacter*> Characters;
+	// TODO: Using array of BP_DarsiaCharacter's in BP_DarsiaGameMode
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// TArray<class ADarsiaCharacter*> Characters;
 
 };

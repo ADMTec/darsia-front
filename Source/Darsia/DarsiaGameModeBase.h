@@ -11,6 +11,7 @@ class DARSIA_API ADarsiaGameModeBase : public AGameModeBase
 
 protected:
 	void BeginPlay() override;
+	void BeginDestroy() override;
 
 	// Character properties
 
@@ -24,4 +25,11 @@ protected:
 	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	// TArray<class ADarsiaCharacter*> Characters;
 
+	// Middleware initial implementation
+	// TODO: Remove CallInEditor specifiers
+
+	TSharedPtr<class FSocketIONative> Socket;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, CallInEditor, Category = "Darsia Middleware")
+	void MiddlewareConnect();
 };

@@ -63,8 +63,17 @@ public:
 	 * @param Source	The string data to convert
 	 * @return			A string that encodes the binary data in a way that can be safely transmitted via various Internet protocols
 	 */
-	UFUNCTION(BlueprintCallable, Category = "SIOJ|Utility", meta = (DisplayName = "Base64 Encode"))
+	UFUNCTION(BlueprintPure, Category = "SIOJ|Utility", meta = (DisplayName = "Base64 Encode (String)"))
 	static FString Base64Encode(const FString& Source);
+
+	/**
+	 * Encodes a Byte array into a Base64 string
+	 *
+	 * @param Source	The string data to convert
+	 * @return			A string that encodes the binary data in a way that can be safely transmitted via various Internet protocols
+	 */
+	UFUNCTION(BlueprintPure, Category = "SIOJ|Utility", meta = (DisplayName = "Base64 Encode (Bytes)"))
+	static FString Base64EncodeBytes(const TArray<uint8>& Source);
 
 	/**
 	 * Decodes a Base64 string into a FString
@@ -73,8 +82,19 @@ public:
 	 * @param Dest		The out buffer that will be filled with the decoded data
 	 * @return			True if the buffer was decoded, false if it failed to decode
 	 */
-	UFUNCTION(BlueprintCallable, Category = "SIOJ|Utility", meta = (DisplayName = "Base64 Decode"))
+	UFUNCTION(BlueprintPure, Category = "SIOJ|Utility", meta = (DisplayName = "Base64 Decode (To String)"))
 	static bool Base64Decode(const FString& Source, FString& Dest);
+
+
+	/**
+	 * Decodes a Base64 string into a Byte array
+	 *
+	 * @param Source	The stringified data to convert
+	 * @param Dest		The out buffer that will be filled with the decoded data
+	 * @return			True if the buffer was decoded, false if it failed to decode
+	 */
+	UFUNCTION(BlueprintPure, Category = "SIOJ|Utility", meta = (DisplayName = "Base64 Decode (To Bytes)"))
+	static bool Base64DecodeBytes(const FString& Source, TArray<uint8>& Dest);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Easy URL processing
@@ -153,13 +173,12 @@ public:
 	//custom thunk needed to handle wildcard structs
 	DECLARE_FUNCTION(execSaveStructToJsonFile)
 	{
-		//Get properties and pointers from stack (nb, it's reverse order, right to left!)
 		Stack.StepCompiledIn<UStructProperty>(NULL);
 		UStructProperty* StructProp = ExactCast<UStructProperty>(Stack.MostRecentProperty);
 		void* StructPtr = Stack.MostRecentPropertyAddress;
-		Stack.StepCompiledIn<UStrProperty>(NULL);
-		UStrProperty* FilePathProp = ExactCast<UStrProperty>(Stack.MostRecentProperty);
-		FString FilePath = FilePathProp->GetPropertyValue(Stack.MostRecentPropertyAddress);
+
+		FString FilePath;
+		Stack.StepCompiledIn<UStrProperty>(&FilePath);
 		P_FINISH;
 
 		P_NATIVE_BEGIN;
@@ -170,10 +189,8 @@ public:
 	//custom thunk needed to handle wildcard structs
 	DECLARE_FUNCTION(execLoadJsonFileToStruct)
 	{
-		//Get properties and pointers from stack (nb, it's reverse order, right to left!)
-		Stack.StepCompiledIn<UStrProperty>(NULL);
-		UStrProperty* FilePathProp = ExactCast<UStrProperty>(Stack.MostRecentProperty);
-		FString FilePath = FilePathProp->GetPropertyValue(Stack.MostRecentPropertyAddress);
+		FString FilePath;
+		Stack.StepCompiledIn<UStrProperty>(&FilePath);
 		Stack.StepCompiledIn<UStructProperty>(NULL);
 		UStructProperty* StructProp = ExactCast<UStructProperty>(Stack.MostRecentProperty);
 		void* StructPtr = Stack.MostRecentPropertyAddress;

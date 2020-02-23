@@ -5,6 +5,8 @@
 
 #include "SIOJsonValue.h"
 #include "SIOJConvert.h"
+#include "ISIOJson.h"
+#include "Runtime/Core/Public/Misc/Base64.h"
 
 #if PLATFORM_WINDOWS
 #pragma region FJsonValueBinary
@@ -18,6 +20,18 @@ TArray<uint8> FJsonValueBinary::AsBinary(const TSharedPtr<FJsonValue>& InJsonVal
 		TSharedPtr<FJsonValueBinary> BinaryValue = StaticCastSharedPtr<FJsonValueBinary>(InJsonValue);
 		return BinaryValue->AsBinary();
 	}
+	else if (InJsonValue->Type == EJson::String)
+	{
+		//If we got a string that isn't detected as a binary via socket.io protocol hack
+		//then we need to decode this string as base 64
+		TArray<uint8> DecodedArray;
+		bool bDidDecodeCorrectly = FBase64::Decode(InJsonValue->AsString(), DecodedArray);
+		if (!bDidDecodeCorrectly)
+		{
+			UE_LOG(LogSIOJ, Warning, TEXT("FJsonValueBinary::AsBinary couldn't decode %s as a binary."), *InJsonValue->AsString());
+		}
+		return DecodedArray;
+	}
 	else
 	{
 		TArray<uint8> EmptyArray;
@@ -28,6 +42,10 @@ TArray<uint8> FJsonValueBinary::AsBinary(const TSharedPtr<FJsonValue>& InJsonVal
 
 bool FJsonValueBinary::IsBinary(const TSharedPtr<FJsonValue>& InJsonValue)
 {
+	if (!InJsonValue.IsValid())
+	{
+		return false;
+	}
 	//use our hackery to determine if we got a binary string
 	bool IgnoreBool;
 	return !InJsonValue->TryGetBool(IgnoreBool);
@@ -112,7 +130,7 @@ USIOJsonValue* USIOJsonValue::ConstructJsonValueBinary(UObject* WorldContextObje
 	return NewValue;
 }
 
-USIOJsonValue* ConstructJsonValue(UObject* WorldContextObject, const TSharedPtr<FJsonValue>& InValue)
+USIOJsonValue* USIOJsonValue::ConstructJsonValue(UObject* WorldContextObject, const TSharedPtr<FJsonValue>& InValue)
 {
 	TSharedPtr<FJsonValue> NewVal = InValue;
 
@@ -223,7 +241,7 @@ FString USIOJsonValue::GetTypeString() const
 	}
 }
 
-bool USIOJsonValue::IsNull() const 
+bool USIOJsonValue::IsNull() const
 {
 	if (!JsonVal.IsValid())
 	{
@@ -321,7 +339,7 @@ TArray<uint8> USIOJsonValue::AsBinary()
 		TArray<uint8> ByteArray;
 		return ByteArray;
 	}
-	
+
 	//binary object pretending & starts with non-json format? it's our disguise binary
 	if (JsonVal->Type == EJson::String)
 	{
@@ -341,7 +359,7 @@ TArray<uint8> USIOJsonValue::AsBinary()
 			ByteArray.AddUninitialized(HexString.Len() / 2);
 
 			bool DidConvert = FString::ToHexBlob(HexString, ByteArray.GetData(), ByteArray.Num());
-			
+
 			//Empty our array if conversion failed
 			if (!DidConvert)
 			{
@@ -360,7 +378,7 @@ TArray<uint8> USIOJsonValue::AsBinary()
 }
 
 FString USIOJsonValue::EncodeJson() const
-{ 
+{
 	return USIOJConvert::ToJsonString(JsonVal);
 }
 

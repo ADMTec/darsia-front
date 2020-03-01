@@ -18,8 +18,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class ADarsiaCharacter> DarsiaCharacterBP;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	int NumberOfPlayers = 2;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	//int NumberOfPlayers = 2;
 
 	// TODO: Using array of BP_DarsiaCharacter's in BP_DarsiaGameMode
 	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
